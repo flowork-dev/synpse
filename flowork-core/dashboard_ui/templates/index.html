@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flowork AI Mission Control</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Exo+2:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Exo 2', sans-serif; background-color: #0c0c1e; }
+        .orbitron { font-family: 'Orbitron', monospace; }
+        .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .log-container { height: 400px; background-color: #000; border-radius: 5px; font-family: 'Courier New', monospace; font-size: 0.8rem; }
+        .log-entry { white-space: pre-wrap; word-break: break-all; }
+        .log-info { color: #00f5ff; }
+        .log-success { color: #39ff14; }
+        .log-warn { color: #ffeb3b; }
+        .log-error { color: #ff5252; }
+        .log-debug { color: #9E9E9E; }
+    </style>
+</head>
+<body class="text-white">
+
+    <div class="container-fluid p-4">
+        <header class="pb-3 mb-4 border-bottom border-secondary">
+            <h1 class="orbitron"><i class="bi bi-cpu-fill text-info"></i> FLOWORK MISSION CONTROL</h1>
+        </header>
+
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="glass-card rounded-3 p-3 mb-4">
+                    <h5 class="orbitron"><i class="bi bi-activity text-success"></i> Vitals</h5>
+                    <ul class="list-unstyled mb-0 small">
+                        <li><strong>Kernel Version:</strong> <span id="kernel-version">...</span></li>
+                        <li><strong>License Tier:</strong> <span id="license-tier">...</span></li>
+                        <li><strong>Uptime:</strong> <span id="kernel-uptime">...</span></li>
+                        <li><strong>CPU Load:</strong> <span id="cpu-load">...</span> %</li>
+                        <li><strong>RAM Usage:</strong> <span id="ram-usage">...</span> MB</li>
+                    </ul>
+                </div>
+
+                <div class="glass-card rounded-3 p-3 mb-4">
+                    <h5 class="orbitron"><i class="bi bi-hdd-network-fill text-primary"></i> Services</h5>
+                     <ul class="list-unstyled mb-0 small">
+                        <li><strong>Dashboard URL:</strong> <a href="#" id="access-url" target="_blank">...</a> <i class="bi bi-clipboard" id="copy-ip-button" style="cursor: pointer;"></i></li>
+                        <li><strong>API Status:</strong> <span id="api-status">...</span></li>
+                        <li><strong>Gateway Status:</strong> <span id="gateway-status">...</span></li>
+                    </ul>
+                    <button class="btn btn-sm btn-outline-primary w-100 mt-2" id="reconnect-gateway-btn"><i class="bi bi-arrow-repeat me-1"></i> Force Reconnect to Gateway</button>
+                </div>
+
+                <div class="glass-card rounded-3 p-3">
+                     <h5 class="orbitron"><i class="bi bi-shield-key-fill text-warning"></i> Engine Token</h5>
+                     <p class="small text-white-50">Token ini digunakan untuk menghubungkan Core Engine ke akun Flowork Cloud Anda.</p>
+                     <div class="input-group">
+                        <input type="text" id="engine-token-field" class="form-control form-control-sm bg-dark text-white-50" value="..." readonly>
+                        <button class="btn btn-outline-secondary" type="button" id="copy-token-button"><i class="bi bi-clipboard"></i></button>
+                    </div>
+                    <div class="d-grid mt-2">
+                        <button class="btn btn-warning" type="button" id="auth-via-gateway-btn">
+                            <i class="bi bi-box-arrow-in-right me-2"></i> Connect Account & Get Token
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-lg-5">
+                 <div class="glass-card rounded-3 p-3 h-100 d-flex flex-column">
+                    <h5 class="orbitron"><i class="bi bi-terminal-fill text-success-emphasis"></i> Real-time Engine Log</h5>
+                    <div id="log-container" class="log-container p-2 flex-grow-1 overflow-auto">
+                        </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                 <div class="glass-card rounded-3 p-3 h-100">
+                    <h5 class="orbitron"><i class="bi bi-motherboard-fill text-info"></i> System Specs</h5>
+                    <div id="specs-container" class="small">
+                        <p class="mb-1"><strong>OS:</strong> <span id="spec-os">...</span></p>
+                        <p class="mb-1"><strong>Arch:</strong> <span id="spec-arch">...</span></p>
+                        <p class="mb-1"><strong>Processor:</strong> <span id="spec-proc">...</span></p>
+                        <p class="mb-1"><strong>CPU:</strong> <span id="spec-cpu">...</span></p>
+                        <p class="mb-1"><strong>RAM:</strong> <span id="spec-ram">...</span> GB</p>
+                        <div id="spec-gpu-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

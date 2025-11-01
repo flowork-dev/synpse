@@ -1,0 +1,30 @@
+#######################################################################
+# WEBSITE https://flowork.cloud
+# File NAME : C:\FLOWORK\flowork-gateway\requirements.txt
+# PERBAIKAN: Menambahkan eth-account untuk generate private key
+#######################################################################
+Flask
+Flask-SocketIO
+python-socketio
+python-engineio
+Werkzeug
+Flask-SQLAlchemy
+Flask-Migrate
+# psycopg2-binary <-- DIHAPUS
+python-dotenv
+PyJWT
+requests
+eventlet
+# redis <-- DIHAPUS
+Flask-Cors
+prometheus-flask-exporter
+opentelemetry-api
+opentelemetry-sdk
+opentelemetry-instrumentation-flask
+opentelemetry-instrumentation-requests
+opentelemetry-exporter-otlp-proto-http
+Flask-Compress
+# Flask-Redis <-- DIHAPUS
+cryptography
+web3
+eth-account

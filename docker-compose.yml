@@ -1,0 +1,95 @@
+#######################################################################
+# WEBSITE https://flowork.cloud
+# File NAME : C:\FLOWORK\docker-compose.yml
+# PERBAIKAN: Meneruskan FLOWORK_ENGINE_ID dan FLOWORK_ENGINE_TOKEN
+#            ke service gateway agar token menjadi satu sumber (source of truth).
+# PERBAIKAN 2: Menggunakan command entrypoint yang benar (run_server.py)
+#######################################################################
+
+services:
+  gateway:
+    build:
+      context: ./flowork-gateway
+      dockerfile: Dockerfile
+    container_name: flowork_gateway
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:////app/data/gateway.db
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - GATEWAY_SECRET_TOKEN=${GATEWAY_SECRET_TOKEN}
+      - FLOWORK_MASTER_PRIVATE_KEY=${FLOWORK_MASTER_PRIVATE_KEY}
+      # --- PENAMBAHAN KODE: Teruskan ID & Token Engine ke Gateway ---
+      - FLOWORK_ENGINE_ID=${FLOWORK_ENGINE_ID}
+      - FLOWORK_ENGINE_TOKEN=${FLOWORK_ENGINE_TOKEN}
+    volumes:
+      - gateway_data:/app/data
+    networks:
+      - flowork-net
+    entrypoint: ["/bin/sh", "-c", "chmod +x ./entrypoint.sh && ./entrypoint.sh"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/system/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  core:
+    build:
+      context: ./flowork-core
+      dockerfile: Dockerfile
+    container_name: flowork_core
+    ports:
+      - "5001:5001" # Dashboard
+      - "12345:12345" # WebSocket Server
+    environment:
+      - GATEWAY_SECRET_TOKEN=${GATEWAY_SECRET_TOKEN}
+      - DATABASE_URL=sqlite:////app/data/flowork_data.db
+      - CORE_API_PORT=8989
+      # --- PENAMBAHAN BARU (FASE 2) ---
+      - FLOWORK_ENGINE_ID=${FLOWORK_ENGINE_ID} # Teruskan variabel dari .env
+      # --- PERBAIKAN BARU ---
+      - FLOWORK_ENGINE_TOKEN=${FLOWORK_ENGINE_TOKEN} # Teruskan variabel dari .env
+    volumes:
+      - ./flowork-core-data:/app/data
+      - "${USERPROFILE}/Desktop:/host_desktop:rw"
+      - "${USERPROFILE}/Documents:/host_documents:rw"
+      - "${USERPROFILE}/Videos:/host_videos:rw"
+      - "${USERPROFILE}/Music:/host_music:rw"
+      - "${USERPROFILE}/Pictures:/host_pictures:rw"
+    networks:
+      - flowork-net
+    # (PERBAIKAN) Pastikan command sesuai dengan file yang menjalankan server
+    # Jika file utama adalah run_server.py
+    command: python run_server.py
+    # Jika file utama adalah local_server.py (sesuai roadmap)
+    # command: python local_server.py # <-- INI SALAH JIKA DIAKTIFKAN
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8989/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 20s
+    depends_on: # Tambahkan depends_on agar core menunggu gateway sehat
+       gateway:
+         condition: service_healthy
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: flowork_cloudflared
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARED_TOKEN}
+    networks:
+      - flowork-net
+    depends_on:
+      core:
+        condition: service_healthy # cloudflared menunggu core sehat
+      gateway:
+        condition: service_healthy # cloudflared juga menunggu gateway sehat
+
+volumes:
+  gateway_data:
+
+networks:
+  flowork-net:
+    driver: bridge
