@@ -1,0 +1,446 @@
+{
+    "services": [
+        {
+            "id": "event_bus",
+            "class_name": "EventBusService",
+            "module_path": "flowork_kernel.services.event_bus_service.event_bus_service",
+            "singleton": true,
+            "dependencies": [],
+            "async_start": false
+        },
+        {
+            "id": "database_service",
+            "class_name": "DatabaseService",
+            "module_path": "flowork_kernel.services.database_service.database_service",
+            "singleton": true,
+            "dependencies": [],
+            "async_start": false
+        },
+        {
+            "id": "localization_manager",
+            "class_name": "LocalizationManagerService",
+            "module_path": "flowork_kernel.services.localization_manager_service.localization_manager_service",
+            "singleton": true,
+            "dependencies": [
+                "event_bus"
+            ],
+            "async_start": false
+        },
+        {
+            "id": "gateway_connector_service",
+            "class_name": "GatewayConnectorService",
+            "module_path": "flowork_kernel.services.gateway_connector_service.gateway_connector_service",
+            "singleton": true,
+            "dependencies": [
+                "event_bus",
+                "localization_manager"
+            ],
+            "async_start": true
+        },
+        {
+            "id": "api_server_service",
+            "class_name": "ApiServerService",
+            "module_path": "flowork_kernel.services.api_server_service.api_server_service",
+            "singleton": true,
+            "dependencies": [
+                "event_bus"
+            ],
+            "async_start": true
+        },
+        {
+            "id": "variable_manager",
+            "class_name": "VariableManagerService",
+            "module_path": "flowork_kernel.services.variable_manager_service.variable_manager_service",
+            "singleton": true,
+            "dependencies": [
+                "event_bus",
+                "localization_manager"
+            ],
+            "async_start": false
+        },
+        {
+            "id": "preset_manager_service",
+            "class_name": "PresetManagerService",
+            "module_path": "flowork_kernel.services.preset_manager_service.preset_manager_service",
+            "singleton": true,
+            "dependencies": [
+                "event_bus",
+                "localization_manager"
+            ],
+            "async_start": false
+        },
+        {
+            "id": "module_manager_service",
+            "class_name": "ModuleManagerService",
+            "module_path": "flowork_kernel.services.module_manager_service.module_manager_service",
+            "singleton": true,
+            "dependencies": [
+                "event_bus",
+                "localization_manager"
+            ],
+            "async_start": true
+        },
+        {
+            "id": "plugin_manager_service",
+            "class_name": "PluginManagerService",
+            "module_path": "flowork_kernel.services.plugin_manager_service.plugin_manager_service",
+            "singleton": true,
+            "dependencies": [
+                "event_bus",
+                "localization_manager"
+            ],
+            "async_start": true
+        },
+        {
+            "id": "tools_manager_service",
+            "class_name": "ToolsManagerService",
+            "module_path": "flowork_kernel.services.tools_manager_service.tools_manager_service",
+            "singleton": true,
+            "dependencies": [
+                "event_bus",
+                "localization_manager"
+            ],
+            "async_start": true
+        },
+        {
+            "id": "trigger_manager_service",
+            "class_name": "TriggerManagerService",
+            "module_path": "flowork_kernel.services.trigger_manager_service.trigger_manager_service",
+            "singleton": true,
+            "dependencies": [
+                "event_bus",
+                "localization_manager"
+            ],
+            "async_start": true
+        },
+        {
+            "id": "ai_provider_manager_service",
+            "class_name": "AIProviderManagerService",
+            "module_path": "flowork_kernel.services.ai_provider_manager_service.ai_provider_manager_service",
+            "singleton": true,
+            "dependencies": [
+                "event_bus",
+                "localization_manager",
+                "variable_manager"
+            ],
+            "async_start": true
+        },
+        {
+            "id": "dataset_manager_service",
+            "class_name": "DatasetManagerService",
+            "module_path": "flowork_kernel.services.dataset_manager_service.dataset_manager_service",
+            "singleton": true,
+            "dependencies": [
+                "database_service"
+            ],
+            "async_start": false
+        },
+        {
+            "id": "ai_training_service",
+            "class_name": "AITrainingService",
+            "module_path": "flowork_kernel.services.ai_training_service.ai_training_service",
+            "singleton": true,
+            "dependencies": [
+                "event_bus",
+                "dataset_manager_service",
+                "ai_provider_manager_service"
+            ],
+            "async_start": false
+        },
+        {
+            "id": "prompt_manager_service",
+            "class_name": "PromptManagerService",
+            "module_path": "flowork_kernel.services.prompt_manager_service.prompt_manager_service",
+            "singleton": true,
+            "dependencies": [
+                "database_service"
+            ],
+            "async_start": false
+        },
+        {
+            "id": "workflow_executor_service",
+            "class_name": "WorkflowExecutorService",
+            "module_path": "flowork_kernel.services.workflow_executor_service.workflow_executor_service",
+            "singleton": true,
+            "dependencies": [
+                "event_bus",
+                "module_manager_service",
+                "ai_provider_manager_service",
+                "variable_manager",
+                "localization_manager"
+            ],
+            "async_start": false
+        },
+        {
+            "id": "startup_service",
+            "class_name": "StartupService",
+            "module_path": "flowork_kernel.services.startup_service.startup_service",
+            "singleton": true,
+            "dependencies": [],
+            "async_start": false
+        },
+        {
+            "id": "diagnostics_service",
+            "COMMENT": "Temporarily disabled - Missing 'scanners' directory which causes ModuleNotFoundError.",
+            "class_name": "DiagnosticsService",
+            "module_path": "flowork_kernel.services.diagnostics_service.diagnostics_service",
+            "singleton": true,
+            "dependencies": [],
+            "async_start": false
+        },
+        {
+            "id": "metrics_service",
+            "class_name": "MetricsService",
+            "module_path": "flowork_kernel.services.metrics_service.metrics_service",
+            "singleton": true,
+            "dependencies": [
+                "event_bus",
+                "database_service"
+            ],
+            "async_start": false
+        },
+        {
+            "id": "state_manager_service",
+            "class_name": "StateManagerService",
+            "module_path": "flowork_kernel.services.state_manager_service.state_manager_service",
+            "singleton": true,
+            "dependencies": [
+                "database_service"
+            ],
+            "async_start": false
+        },
+        {
+            "id": "permission_manager_service",
+            "class_name": "PermissionManagerService",
+            "module_path": "flowork_kernel.services.permission_manager_service.permission_manager_service",
+            "singleton": true,
+            "dependencies": [
+                "gateway_connector_service"
+            ],
+            "async_start": false
+        },
+        {
+            "id": "behavior_manager_service",
+            "class_name": "BehaviorManagerService",
+            "module_path": "flowork_kernel.services.behavior_manager_service.behavior_manager_service",
+            "singleton": true,
+            "dependencies": [
+                "event_bus"
+            ],
+            "async_start": false
+        },
+        {
+            "id": "screen_recorder_service",
+            "class_name": "ScreenRecorderService",
+            "module_path": "flowork_kernel.services.screen_recorder_service.screen_recorder_service",
+            "singleton": true,
+            "dependencies": [],
+            "async_start": false
+        },
+        {
+            "id": "update_service",
+            "class_name": "UpdateService",
+            "module_path": "flowork_kernel.services.update_service.update_service",
+            "singleton": true,
+            "dependencies": [
+                "event_bus"
+            ],
+            "async_start": false
+        },
+        {
+            "id": "community_addon_service",
+            "class_name": "CommunityAddonService",
+            "module_path": "flowork_kernel.services.community_addon_service.community_addon_service",
+            "singleton": true,
+            "dependencies": [
+                "module_manager_service",
+                "plugin_manager_service",
+                "tools_manager_service",
+                "trigger_manager_service"
+            ],
+            "async_start": false
+        },
+        {
+            "id": "cloud_sync_service",
+            "class_name": "CloudSyncService",
+            "module_path": "flowork_kernel.services.cloud_sync_service.cloud_sync_service",
+            "singleton": true,
+            "dependencies": [
+                "gateway_connector_service",
+                "preset_manager_service"
+            ],
+            "async_start": false
+        },
+        {
+            "id": "integrity_checker_service",
+            "class_name": "IntegrityCheckerService",
+            "module_path": "flowork_kernel.services.integrity_checker_service.integrity_checker_service",
+            "singleton": true,
+            "dependencies": [],
+            "async_start": false
+        },
+        {
+            "id": "license_manager_service",
+            "class_name": "LicenseManagerService",
+            "module_path": "flowork_kernel.services.license_manager_service.license_manager_service",
+            "singleton": true,
+            "dependencies": [
+                "event_bus",
+                "gateway_connector_service"
+            ],
+            "async_start": false
+        },
+        {
+            "id": "documentation_service",
+            "class_name": "DocumentationService",
+            "module_path": "flowork_kernel.services.documentation_service.documentation_service",
+            "singleton": true,
+            "dependencies": [],
+            "async_start": false
+        },
+        {
+            "id": "scanner_manager_service",
+            "COMMENT": "Temporarily disabled - Missing 'scanners' directory which causes ModuleNotFoundError.",
+            "class_name": "ScannerManagerService",
+            "module_path": "flowork_kernel.services.scanner_manager_service.scanner_manager_service",
+            "singleton": true,
+            "dependencies": [],
+            "async_start": true
+        },
+        {
+            "id": "ai_analyzer_service",
+            "class_name": "AIAnalyzerService",
+            "module_path": "flowork_kernel.services.ai_analyzer_service.ai_analyzer_service",
+            "singleton": true,
+            "dependencies": [
+                "ai_provider_manager_service"
+            ],
+            "async_start": false
+        },
+        {
+            "id": "ai_architect_service",
+            "class_name": "AiArchitectService",
+            "module_path": "flowork_kernel.services.ai_architect_service.ai_architect_service",
+            "singleton": true,
+            "dependencies": [
+                "ai_provider_manager_service",
+                "module_manager_service",
+                "localization_manager"
+            ],
+            "async_start": false
+        },
+        {
+            "id": "agent_manager_service",
+            "class_name": "AgentManagerService",
+            "module_path": "flowork_kernel.services.agent_manager_service.agent_manager_service",
+            "singleton": true,
+            "dependencies": [
+                "database_service",
+                "event_bus"
+            ],
+            "async_start": false
+        },
+        {
+            "id": "agent_executor_service",
+            "class_name": "AgentExecutorService",
+            "module_path": "flowork_kernel.services.agent_executor_service.agent_executor_service",
+            "singleton": true,
+            "dependencies": [
+                "event_bus",
+                "agent_manager_service",
+                "ai_provider_manager_service",
+                "tools_manager_service"
+            ],
+            "async_start": false
+        },
+        {
+            "id": "model_converter_service",
+            "class_name": "ModelConverterService",
+            "module_path": "flowork_kernel.services.model_converter_service.model_converter_service",
+            "singleton": true,
+            "dependencies": [
+                "event_bus"
+            ],
+            "async_start": false
+        },
+        {
+            "id": "widget_manager_service",
+            "class_name": "WidgetManagerService",
+            "module_path": "flowork_kernel.services.widget_manager_service.widget_manager_service",
+            "singleton": true,
+            "dependencies": [],
+            "async_start": true
+        },
+        {
+            "id": "scheduler_manager_service",
+            "class_name": "SchedulerManagerService",
+            "module_path": "flowork_kernel.services.scheduler_manager_service.scheduler_manager_service",
+            "singleton": true,
+            "dependencies": [
+                "database_service"
+            ],
+            "async_start": false
+        },
+        {
+            "id": "os_scheduler_service",
+            "class_name": "OsSchedulerService",
+            "module_path": "flowork_kernel.services.os_scheduler_service.os_scheduler_service",
+            "singleton": true,
+            "dependencies": [
+                "scheduler_manager_service"
+            ],
+            "async_start": false
+        },
+        {
+            "id": "news_fetcher_service",
+            "class_name": "NewsFetcherService",
+            "module_path": "flowork_kernel.services.news_fetcher_service.news_fetcher_service",
+            "singleton": true,
+            "dependencies": [
+                "localization_manager"
+            ],
+            "async_start": false
+        },
+        {
+            "id": "semantic_search_service",
+            "class_name": "SemanticSearchService",
+            "module_path": "flowork_kernel.services.semantic_search_service.semantic_search_service",
+            "singleton": true,
+            "dependencies": [
+                "event_bus",
+                "database_service"
+            ],
+            "async_start": true
+        },
+        {
+            "id": "theme_manager_service",
+            "class_name": "ThemeManagerService",
+            "module_path": "generated_services.theme_manager_service.service",
+            "singleton": true,
+            "dependencies": [
+                "event_bus"
+            ],
+            "async_start": false
+        },
+        {
+            "id": "formatter_manager_service",
+            "class_name": "FormatterManagerService",
+            "module_path": "generated_services.formatter_manager_service.service",
+            "singleton": true,
+            "dependencies": [
+                "event_bus"
+            ],
+            "async_start": false
+        },
+        {
+            "id": "core_lifecycle_service",
+            "class_name": "CoreLifecycleService",
+            "module_path": "generated_services.core_lifecycle_service.service",
+            "singleton": true,
+            "dependencies": [
+                "event_bus"
+            ],
+            "async_start": false
+        }
+    ]
+}

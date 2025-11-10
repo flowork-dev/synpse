@@ -1,0 +1,107 @@
+########################################################################
+# WEBSITE https://flowork.cloud
+# File NAME : C:\FLOWORK\docker-compose.yml total lines 108 
+########################################################################
+
+name: flowork
+
+networks:
+  flowork-net:
+    driver: bridge
+
+services:
+  flowork_gateway:
+    image: flowork/gateway:dev
+    container_name: flowork_gateway
+    build:
+      context: ./flowork-gateway
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+
+    entrypoint: ["/bin/bash", "-c", "dos2unix /app/entrypoint.sh && /app/entrypoint.sh"]
+
+    volumes:
+      - ./flowork-gateway:/app
+      - flowork_data:/app/data
+
+    ports:
+      - "${GW_PORT:-8000}:8000"
+
+    networks:
+      flowork-net:
+        aliases:
+          - gateway
+
+    healthcheck:
+      test: ["CMD-SHELL", "python /app/health_gateway.py"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+
+    restart: unless-stopped
+
+  flowork_core:
+    image: flowork/core:dev
+    container_name: flowork_core
+    build:
+      context: ./flowork-core
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+
+    volumes:
+      - ./flowork-core:/app
+      - flowork_data:/app/data
+
+      - ./modules:/app/flowork_kernel/modules
+      - ./plugins:/app/flowork_kernel/plugins
+      - ./tools:/app/flowork_kernel/tools
+      - ./triggers:/app/flowork_kernel/triggers
+      - ./ai_providers:/app/flowork_kernel/ai_providers
+      - ./ai_models:/app/flowork_kernel/ai_models
+      - ./formatters:/app/flowork_kernel/formatters
+      - ./scanners:/app/flowork_kernel/scanners
+      - ./assets:/app/flowork_kernel/assets
+
+    ports:
+      - "${CORE_PORT_TCP:-8989}:8989"
+      - "${CORE_PORT_HTTP:-8990}:8990"
+      - "${CORE_PORT_SOCKET:-5001}:5001"
+    networks:
+      - flowork-net
+
+    depends_on:
+      flowork_gateway:
+        condition: service_healthy
+
+    healthcheck:
+      test: ["CMD-SHELL", "python /app/healthchecks/health_core.py"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    restart: unless-stopped
+
+  flowork_cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: flowork_cloudflared
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARED_TOKEN}
+    env_file:
+      - .env
+    networks:
+      - flowork-net
+    depends_on:
+      flowork_gateway:
+        condition: service_healthy
+
+volumes:
+  flowork_data:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: 'C:\FLOWORK\data'

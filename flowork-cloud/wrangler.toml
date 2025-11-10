@@ -1,0 +1,19 @@
+name = "flowork-cloud-backend"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+# -- Binding D1 Database --
+# Tips: Bikin DB ini dulu via command:
+# npx wrangler d1 create flowork-etl-db
+# npx wrangler d1 create flowork-idem-db
+# Lalu copy 'database_id' yang muncul ke sini.
+
+[[d1_databases]]
+binding = "DB_ETL"
+database_name = "flowork-etl-db"
+database_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" # <-- UPDATE INI NANTI
+
+[[d1_databases]]
+binding = "DB_IDEM"
+database_name = "flowork-idem-db"
+database_id = "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy" # <-- UPDATE INI NANTI
